@@ -35,8 +35,7 @@ export function getStyle(
   property: KebabCase<StringKey<CSSStyleDeclaration>>,
 ): string {
   const view = element.ownerDocument?.defaultView ?? window;
-  const style = view.getComputedStyle(element);
-  return style.getPropertyValue(property);
+  return view?.getComputedStyle(element)?.getPropertyValue(property) ?? '';
 }
 
 /**
@@ -99,7 +98,9 @@ const PICAS_PER_INCH = 6;
 export function getFontSize(element?: Element | null): string {
   return isElementDomNode(element)
     ? getStyle(element, 'font-size') || getFontSize(element.parentElement)
-    : getStyle(window.document.documentElement, 'font-size');
+    : window?.document?.documentElement
+    ? getStyle(window.document.documentElement, 'font-size')
+    : '';
 }
 
 type UnitConvertor = (value: number, unit: string) => number;
